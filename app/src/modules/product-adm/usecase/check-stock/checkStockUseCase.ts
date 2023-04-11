@@ -1,9 +1,10 @@
 // dependências
+import UseCaseInterface from "../../../@shared/usecase/useCaseInterface";
 import ProductGateway from "../../gateway/productGateway";
 import { CheckStockInputDto, CheckStockOutputDto } from "./checkStockDto";
 
 // classe que define o caso de uso
-export default class CheckStockUseCase {
+export default class CheckStockUseCase implements UseCaseInterface {
   // injetando o repository
   private _productRepository: ProductGateway;
 

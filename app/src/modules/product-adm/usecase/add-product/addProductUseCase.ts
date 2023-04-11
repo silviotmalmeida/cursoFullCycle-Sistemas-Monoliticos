@@ -1,11 +1,12 @@
 // dependências
 import Id from "../../../@shared/domain/value-object/id";
+import UseCaseInterface from "../../../@shared/usecase/useCaseInterface";
 import Product from "../../domain/product";
 import ProductGateway from "../../gateway/productGateway";
 import { AddProductInputDto, AddProductOutputDto } from "./addProductDto";
 
 // classe que define o caso de uso
-export default class AddProductUseCase {
+export default class AddProductUseCase implements UseCaseInterface {
   // injetando o repository
   private _productRepository: ProductGateway;
 
