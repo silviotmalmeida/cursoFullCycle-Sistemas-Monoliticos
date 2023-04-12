@@ -36,7 +36,7 @@ describe("ProductRepository test", () => {
   it("should create a product", async () => {
     // propriedades do product
     const productProps = {
-      id: new Id("1"),
+      Id: new Id("1"),
       name: "Product 1",
       description: "Product 1 description",
       purchasePrice: 100,
@@ -50,11 +50,11 @@ describe("ProductRepository test", () => {
 
     // consultando no db utilizando os métodos do orm
     const productDb = await ProductModel.findOne({
-      where: { id: productProps.id.id },
+      where: { id: productProps.Id.id },
     });
 
     // comparando-se os dados
-    expect(productProps.id.id).toEqual(productDb.id);
+    expect(productProps.Id.id).toEqual(productDb.id);
     expect(productProps.name).toEqual(productDb.name);
     expect(productProps.description).toEqual(productDb.description);
     expect(productProps.purchasePrice).toEqual(productDb.purchasePrice);
@@ -79,7 +79,7 @@ describe("ProductRepository test", () => {
     const product = await productRepository.find("1");
 
     // comparando-se os dados
-    expect(product.id.id).toEqual("1");
+    expect(product.Id.id).toEqual("1");
     expect(product.name).toEqual("Product 1");
     expect(product.description).toEqual("Product 1 description");
     expect(product.purchasePrice).toEqual(100);

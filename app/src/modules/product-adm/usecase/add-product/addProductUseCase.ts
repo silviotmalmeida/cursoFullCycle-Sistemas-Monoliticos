@@ -19,7 +19,7 @@ export default class AddProductUseCase implements UseCaseInterface {
   async execute(input: AddProductInputDto): Promise<AddProductOutputDto> {
     // obtendo as propriedades para criação do product a partir do input
     const props = {
-      id: new Id(input.id),
+      Id: new Id(input.id),
       name: input.name,
       description: input.description,
       purchasePrice: input.purchasePrice,
@@ -34,7 +34,7 @@ export default class AddProductUseCase implements UseCaseInterface {
 
     // retornando o output conforme padrão do dto
     return {
-      id: product.id.id,
+      id: product.Id.id,
       name: product.name,
       description: product.description,
       purchasePrice: product.purchasePrice,

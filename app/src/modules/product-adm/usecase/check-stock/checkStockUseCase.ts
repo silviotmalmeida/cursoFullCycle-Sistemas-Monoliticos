@@ -20,7 +20,7 @@ export default class CheckStockUseCase implements UseCaseInterface {
 
     // retornando o output conforme padrão do dto
     return {
-      productId: product.id.id,
+      productId: product.Id.id,
       stock: product.stock,
     };
   }

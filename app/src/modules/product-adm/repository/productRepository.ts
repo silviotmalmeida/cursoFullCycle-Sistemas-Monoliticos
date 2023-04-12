@@ -10,7 +10,7 @@ export default class ProductRepository implements ProductGateway {
   async add(product: Product): Promise<void> {
     // utiliza o método default do orm
     await ProductModel.create({
-      id: product.id.id,
+      id: product.Id.id,
       name: product.name,
       description: product.description,
       purchasePrice: product.purchasePrice,
@@ -33,7 +33,7 @@ export default class ProductRepository implements ProductGateway {
 
     // recriando o product
     return new Product({
-      id: new Id(product.id),
+      Id: new Id(product.id),
       name: product.name,
       description: product.description,
       purchasePrice: product.purchasePrice,

@@ -4,20 +4,20 @@ import Id from "../value-object/id";
 // superclasse de todas as entidades, com atributos e métodos gerais
 export default class BaseEntity {
   // atributos
-  private _id: Id;
+  private _Id: Id;
   private _createdAt: Date;
   private _updatedAt: Date;
 
   // construtor
   constructor(id?: Id, createdAt?: Date, updatedAt?: Date) {
-    this._id = id || new Id();
+    this._Id = id || new Id();
     this._createdAt = createdAt || new Date();
     this._updatedAt = updatedAt || new Date();
   }
 
   // getters e setters necessários
-  get id(): Id {
-    return this._id;
+  get Id(): Id {
+    return this._Id;
   }
 
   get createdAt(): Date {

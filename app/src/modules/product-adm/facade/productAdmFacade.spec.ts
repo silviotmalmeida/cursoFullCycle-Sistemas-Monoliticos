@@ -1,7 +1,7 @@
 // dependências
 import { Sequelize } from "sequelize-typescript";
 import { ProductModel } from "../repository/productModel";
-import ProductAdmFacadeFactory from "../factory/facadeFactory";
+import ProductAdmFacadeFactory from "../factory/productAdmfacadeFactory";
 
 // criando a suíte de testes de unidade
 describe("ProductAdmFacade test", () => {

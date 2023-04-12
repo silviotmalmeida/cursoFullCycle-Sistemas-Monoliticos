@@ -5,7 +5,8 @@ import AddProductUseCase from "../usecase/add-product/addProductUseCase";
 import CheckStockUseCase from "../usecase/check-stock/checkStockUseCase";
 
 // classe de fábrica da facade
-// como é um objeto complexo, a factory auxilia na criação
+// como trata-se de um objeto complexo, além de não ser interessante expor para o mundo externo a forma de criação da facade,
+// foi criada a factory
 export default class ProductAdmFacadeFactory {
   static create() {
     const productRepository = new ProductRepository();

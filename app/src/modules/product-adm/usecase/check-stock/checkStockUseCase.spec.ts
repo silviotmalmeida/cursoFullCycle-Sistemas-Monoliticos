@@ -5,7 +5,7 @@ import CheckStockUseCase from "./checkStockUseCase";
 
 // criando o product
 const product = new Product({
-  id: new Id("1"),
+  Id: new Id("1"),
   name: "Product",
   description: "Product description",
   purchasePrice: 100,
