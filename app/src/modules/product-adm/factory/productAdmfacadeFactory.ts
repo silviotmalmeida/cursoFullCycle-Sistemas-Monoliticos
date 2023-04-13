@@ -1,4 +1,4 @@
-// dependÊncias
+// dependências
 import ProductAdmFacade from "../facade/productAdmFacade";
 import ProductRepository from "../repository/productRepository";
 import AddProductUseCase from "../usecase/add-product/addProductUseCase";
