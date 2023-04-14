@@ -26,7 +26,7 @@ describe("find a product usecase unit test", () => {
     // criando o mock do repository
     const productRepository = MockRepository();
     // criando o caso de uso
-    const findProductUseCase = new FindProductUseCase(productRepository);
+    const usecase = new FindProductUseCase(productRepository);
 
     // definindo o input do caso de uso
     const input = {
@@ -34,7 +34,7 @@ describe("find a product usecase unit test", () => {
     };
 
     // executando o caso de uso e recebendo o output
-    const output = await findProductUseCase.execute(input);
+    const output = await usecase.execute(input);
 
     // verificando os dados
     expect(productRepository.find).toHaveBeenCalled();
