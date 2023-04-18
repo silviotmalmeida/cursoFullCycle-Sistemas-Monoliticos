@@ -44,7 +44,7 @@ describe("ProductRepository test", () => {
     };
     // criando o product
     const product = new Product(productProps);
-    // salvando o product no db utilizando os métodos do repository
+    // salvando no db utilizando os métodos do repository
     const productRepository = new ProductRepository();
     await productRepository.add(product);
 
@@ -64,7 +64,7 @@ describe("ProductRepository test", () => {
   // se for executada uma busca por id, os atributos devem ser iguais aos do objeto de origem
   it("should find a product", async () => {
     // salvando o product no db utilizando os métodos do orm
-    ProductModel.create({
+    const product = await ProductModel.create({
       id: "1",
       name: "Product 1",
       description: "Product 1 description",
@@ -76,13 +76,15 @@ describe("ProductRepository test", () => {
 
     // consultando no db utilizando os métodos do repository
     const productRepository = new ProductRepository();
-    const product = await productRepository.find("1");
+    const result = await productRepository.find("1");
 
     // comparando-se os dados
-    expect(product.Id.id).toEqual("1");
-    expect(product.name).toEqual("Product 1");
-    expect(product.description).toEqual("Product 1 description");
-    expect(product.purchasePrice).toEqual(100);
-    expect(product.stock).toEqual(10);
+    expect(result.Id.id).toEqual(product.id);
+    expect(result.name).toEqual(product.name);
+    expect(result.description).toEqual(product.description);
+    expect(result.purchasePrice).toEqual(product.purchasePrice);
+    expect(result.stock).toEqual(product.stock);
+    expect(result.createdAt).toStrictEqual(product.createdAt);
+    expect(result.updatedAt).toStrictEqual(product.updatedAt);
   });
 });

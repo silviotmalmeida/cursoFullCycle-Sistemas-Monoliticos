@@ -18,7 +18,7 @@ export default class AddClientUseCase {
   async execute(input: AddClientInputDto): Promise<AddClientOutputDto> {
     // obtendo as propriedades para criação do client a partir do input
     const props = {
-      id: new Id(input.id) || new Id(),
+      Id: new Id(input.id) || new Id(),
       name: input.name,
       email: input.email,
       address: input.address,
