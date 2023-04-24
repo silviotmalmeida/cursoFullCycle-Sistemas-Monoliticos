@@ -13,7 +13,7 @@ export default class ProcessPaymentUseCase implements UseCaseInterface {
   private _transactionRepository: PaymentGateway;
 
   // construtor
-  constructor(private transactionRepository: PaymentGateway) {
+  constructor(transactionRepository: PaymentGateway) {
     this._transactionRepository = transactionRepository;
   }
 

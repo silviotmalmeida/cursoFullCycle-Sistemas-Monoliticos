@@ -40,7 +40,7 @@ describe("TransactionRepository test", () => {
       amount: 100,
       orderId: "1",
     });
-    // aptovando a transaction
+    // aprovando a transaction
     transaction.approve();
 
     // salvando no db utilizando os métodos do repository

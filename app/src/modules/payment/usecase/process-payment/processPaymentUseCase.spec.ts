@@ -12,7 +12,7 @@ const transaction = new Transaction({
 });
 
 // configurando o mock do repository
-const MockRepository = () => {
+const MockRepositoryApproved = () => {
   return {
     save: jest.fn().mockReturnValue(Promise.resolve(transaction)), // o método save retorna a transaction aprovada
   };
@@ -38,7 +38,7 @@ describe("Process payment usecase unit test", () => {
   // se uma solicitação possuir amount >= 100, deve ser aprovada
   it("should approve a transaction", async () => {
     // criando o mock do repository
-    const paymentRepository = MockRepository();
+    const paymentRepository = MockRepositoryApproved();
     // criando o caso de uso
     const usecase = new ProcessPaymentUseCase(paymentRepository);
 
