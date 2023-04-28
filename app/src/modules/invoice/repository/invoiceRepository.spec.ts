@@ -1,7 +1,7 @@
 // dependências
 import { Sequelize } from "sequelize-typescript";
 import InvoiceModel from "./invoiceModel";
-import InvoiceProductModel from "./invoiceProductModel";
+import ProductModel from "./productModel";
 import Address from "../../@shared/domain/value-object/address";
 import Product from "../domain/product";
 import Id from "../../@shared/domain/value-object/id";
@@ -24,7 +24,7 @@ describe("Invoice repository test", () => {
     });
 
     // adicionando as models a serem consideradas na criação das tabelas
-    await sequelize.addModels([InvoiceModel, InvoiceProductModel]);
+    await sequelize.addModels([InvoiceModel, ProductModel]);
     // criando o db
     await sequelize.sync();
   });
@@ -52,11 +52,15 @@ describe("Invoice repository test", () => {
       Id: new Id("p1"),
       name: "Product 1",
       price: 10.0,
+      createdAt: new Date(),
+      updatedAt: new Date(),
     });
     const product2 = new Product({
       Id: new Id("p2"),
       name: "Product 2",
       price: 15.0,
+      createdAt: new Date(),
+      updatedAt: new Date(),
     });
 
     // obtendo as propriedades para criação do invoice
@@ -66,6 +70,8 @@ describe("Invoice repository test", () => {
       document: "123456",
       Address: address,
       items: [product1, product2],
+      createdAt: new Date(),
+      updatedAt: new Date(),
     };
     // criando o invoice
     const invoice = new Invoice(props);
@@ -97,12 +103,16 @@ describe("Invoice repository test", () => {
           invoice_id: invoice.Id.id,
           name: product1.name,
           price: product1.price,
+          createdAt: product1.createdAt,
+          updatedAt: product1.updatedAt,
         },
         {
           id: product2.Id.id,
           invoice_id: invoice.Id.id,
           name: product2.name,
           price: product2.price,
+          createdAt: product2.createdAt,
+          updatedAt: product2.updatedAt,
         },
       ],
       total: invoice.total(),
@@ -111,49 +121,65 @@ describe("Invoice repository test", () => {
     });
   });
 
-  // // se for executada uma busca por id, os atributos devem ser iguais aos do objeto de origem
-  // it("should find a order", async () => {
-  //   // criando o customer
-  //   const customer = new Customer("123", "Customer 1");
-  //   const address = new Address("Street 1", 1, "Zipcode 1", "City 1");
-  //   customer.changeAddress(address);
-  //   // salvando o customer no db utilizando os métodos do repository
-  //   const customerRepository = new CustomerRepository();
-  //   await customerRepository.create(customer);
+  // se for executada uma busca por id, os atributos devem ser iguais aos do objeto de origem
+  it("should find a invoice", async () => {
+    // criando o address
+    const address = new Address(
+      "Street 1",
+      "123",
+      "Complement 1",
+      "City 1",
+      "State 1",
+      "Zip123"
+    );
 
-  //   // criando o product
-  //   const product = new Product("123", "Product 1", 10);
-  //   // salvando o product no db utilizando os métodos do repository
-  //   const productRepository = new ProductRepository();
-  //   await productRepository.create(product);
+    // criando os products
+    const product1 = new Product({
+      Id: new Id("p1"),
+      name: "Product 1",
+      price: 10.0,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
+    const product2 = new Product({
+      Id: new Id("p2"),
+      name: "Product 2",
+      price: 15.0,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
 
-  //   // criando o orderItem
-  //   const ordemItem = new OrderItem(
-  //     "1",
-  //     product.name,
-  //     product.price,
-  //     product.id,
-  //     2
-  //   );
-  //   // criando o order
-  //   const order = new Order("123", customer.id, [ordemItem]);
-  //   // salvando o product no db utilizando os métodos do repository
-  //   const orderRepository = new OrderRepository();
-  //   await orderRepository.create(order);
+    // obtendo as propriedades para criação do invoice
+    const props = {
+      Id: new Id("1"),
+      name: "Client 1",
+      document: "123456",
+      Address: address,
+      items: [product1, product2],
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    // criando o invoice
+    const invoice = new Invoice(props);
 
-  //   // consultando no db utilizando os métodos do repository
-  //   const orderResult = await orderRepository.find(order.id);
+    // salvando no db utilizando os métodos do repository
+    const repository = new InvoiceRepository();
+    await repository.generate(invoice);
 
-  //   // comparando-se os dados
-  //   expect(order).toStrictEqual(orderResult);
-  // });
+    // consultando no db utilizando os métodos do repository
+    const invoiceResult = await repository.find(invoice.Id.id);
 
-  // // se for executada uma busca por id e a mesma não retornar registros, deve-se lançar uma exceção
-  // it("should throw an error when order id is not found", async () => {
-  //   // consultando no db utilizando os métodos do repository, por um registro inexistente
-  //   const orderRepository = new OrderRepository();
-  //   expect(async () => {
-  //     await orderRepository.find("456ABC");
-  //   }).rejects.toThrow("Order not found");
-  // });
+    // comparando-se os dados
+    expect(invoice).toStrictEqual(invoiceResult);
+  });
+
+  // se for executada uma busca por id e a mesma não retornar registros, deve-se lançar uma exceção
+  it("should throw an error when invoice id is not found", async () => {
+    // consultando no db utilizando os métodos do repository, por um registro inexistente
+    const repository = new InvoiceRepository();
+
+    expect(async () => {
+      await repository.find("456ABC");
+    }).rejects.toThrow("Invoice not found");
+  });
 });

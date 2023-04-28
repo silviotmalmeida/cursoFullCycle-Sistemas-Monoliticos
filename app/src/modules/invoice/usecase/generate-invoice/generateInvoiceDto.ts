@@ -1,5 +1,6 @@
 // padrão de propriedades a serem passadas como input no caso de uso
 export interface GenerateInvoiceInputDto {
+  id?: string;
   name: string;
   document: string;
   street: string;

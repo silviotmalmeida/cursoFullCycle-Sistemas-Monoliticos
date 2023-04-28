@@ -42,9 +42,9 @@ export default class GenerateInvoiceUseCase {
       });
     });
 
-    // obtendo as propriedades para criação do client a partir do input
+    // obtendo as propriedades para criação do invoice a partir do input
     const props = {
-      Id: new Id(),
+      Id: new Id(input.id),
       name: input.name,
       document: input.document,
       Address: address,
@@ -55,7 +55,7 @@ export default class GenerateInvoiceUseCase {
     const invoice = new Invoice(props);
 
     // adicionando no BD utilizando o repository
-    this._invoiceRepository.generate(invoice);
+    await this._invoiceRepository.generate(invoice);
 
     // retornando o output conforme padrão do dto
     return {

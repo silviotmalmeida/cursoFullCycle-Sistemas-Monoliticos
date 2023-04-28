@@ -11,12 +11,12 @@ import InvoiceModel from "./invoiceModel";
 
 // definindo as características da tabela no db
 @Table({
-  tableName: "invoice_products",
+  tableName: "products",
   timestamps: false,
 })
 
 // classe de modelo do orm sequelize
-export default class InvoiceProductModel extends Model {
+export default class ProductModel extends Model {
   // definindo as colunas e restrições da tabela
   @PrimaryKey
   @Column
@@ -35,4 +35,10 @@ export default class InvoiceProductModel extends Model {
 
   @Column({ allowNull: false })
   declare price: number;
+
+  @Column({ allowNull: false })
+  declare createdAt: Date;
+
+  @Column({ allowNull: false })
+  declare updatedAt: Date;
 }

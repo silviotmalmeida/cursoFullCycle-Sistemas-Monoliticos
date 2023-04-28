@@ -6,7 +6,7 @@ import {
   Column,
   HasMany,
 } from "sequelize-typescript";
-import InvoiceProductModel from "./invoiceProductModel";
+import ProductModel from "./productModel";
 
 // definindo as características da tabela no db
 @Table({
@@ -45,20 +45,20 @@ export default class InvoiceModel extends Model {
   @Column({ allowNull: false })
   declare zipCode: string;
 
-  // relacionamento com invoiceItem, tem que ser realizado o include deste model no repository
-  @HasMany(() => InvoiceProductModel, {
+  // relacionamento com product, tem que ser realizado o include deste model no repository
+  @HasMany(() => ProductModel, {
     onUpdate: "CASCADE",
     onDelete: "CASCADE",
     hooks: true,
   })
-  declare items: InvoiceProductModel[];
+  declare items: ProductModel[];
 
   @Column({ allowNull: false })
   declare total: number;
 
   @Column({ allowNull: false })
-  createdAt: Date;
+  declare createdAt: Date;
 
   @Column({ allowNull: false })
-  updatedAt: Date;
+  declare updatedAt: Date;
 }

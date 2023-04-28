@@ -5,7 +5,7 @@ import Invoice from "../domain/invoice";
 import Product from "../domain/product";
 import InvoiceGateway from "../gateway/invoiceGateway";
 import InvoiceModel from "./invoiceModel";
-import InvoiceProductModel from "./invoiceProductModel";
+import ProductModel from "./productModel";
 
 // classe de repositório do orm, implementando a interface de gateway
 export default class InvoiceRepository implements InvoiceGateway {
@@ -26,6 +26,8 @@ export default class InvoiceRepository implements InvoiceGateway {
           id: item.Id.id,
           name: item.name,
           price: item.price,
+          createdAt: item.createdAt,
+          updatedAt: item.updatedAt,
         })),
         total: invoice.total(),
         createdAt: invoice.createdAt,
@@ -33,7 +35,7 @@ export default class InvoiceRepository implements InvoiceGateway {
       },
       {
         // include do relacionamento HasMany, reponsável para criar os registros na tabela relacionada
-        include: [{ model: InvoiceProductModel }],
+        include: [{ model: ProductModel }],
       }
     );
   }
@@ -61,6 +63,8 @@ export default class InvoiceRepository implements InvoiceGateway {
             Id: new Id(item.id),
             name: item.name,
             price: item.price,
+            createdAt: item.createdAt,
+            updatedAt: item.updatedAt,
           });
           return product;
         }
