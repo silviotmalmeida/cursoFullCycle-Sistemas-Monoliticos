@@ -1,6 +1,7 @@
 // dependências
 import Address from "../../../@shared/domain/value-object/address";
 import Id from "../../../@shared/domain/value-object/id";
+import UseCaseInterface from "../../../@shared/usecase/useCaseInterface";
 import Invoice from "../../domain/invoice";
 import Product from "../../domain/product";
 import InvoiceGateway from "../../gateway/invoiceGateway";
@@ -10,7 +11,7 @@ import {
 } from "./generateInvoiceDto";
 
 // classe que define o caso de uso
-export default class GenerateInvoiceUseCase {
+export default class GenerateInvoiceUseCase implements UseCaseInterface {
   // injetando o repository
   private _invoiceRepository: InvoiceGateway;
 

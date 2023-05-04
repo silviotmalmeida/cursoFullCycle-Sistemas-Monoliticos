@@ -1,5 +1,4 @@
 // dependências
-import AggregateRoot from "../../@shared/domain/entity/aggregateRootInterface";
 import BaseEntity from "../../@shared/domain/entity/baseEntity";
 import Id from "../../@shared/domain/value-object/id";
 
@@ -12,8 +11,8 @@ type ProductProps = {
   updatedAt?: Date;
 };
 
-// classe product, estende BaseEntity e implementa AggregateRoot
-export default class Product extends BaseEntity implements AggregateRoot {
+// classe product, estende BaseEntity
+export default class Product extends BaseEntity {
   // atributos
   private _name: string;
   private _price: number;

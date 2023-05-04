@@ -1,9 +1,10 @@
 // dependências
+import UseCaseInterface from "../../../@shared/usecase/useCaseInterface";
 import InvoiceGateway from "../../gateway/invoiceGateway";
 import { FindInvoiceInputDTO, FindInvoiceOutputDTO } from "./findInvoiceDto";
 
 // classe que define o caso de uso
-export default class FindInvoiceUseCase {
+export default class FindInvoiceUseCase implements UseCaseInterface {
   // injetando o repository
   private _invoiceRepository: InvoiceGateway;
 

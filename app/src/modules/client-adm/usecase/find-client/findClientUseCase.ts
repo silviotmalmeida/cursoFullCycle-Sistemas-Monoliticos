@@ -1,9 +1,10 @@
 // dependências
+import UseCaseInterface from "../../../@shared/usecase/useCaseInterface";
 import ClientGateway from "../../gateway/clientGateway";
 import { FindClientInputDto, FindClientOutputDto } from "./findClientDto";
 
 // classe que define o caso de uso
-export default class FindClientUseCase {
+export default class FindClientUseCase implements UseCaseInterface {
   // injetando o repository
   private _clientRepository: ClientGateway;
 

@@ -1,11 +1,12 @@
 // dependências
 import Id from "../../../@shared/domain/value-object/id";
+import UseCaseInterface from "../../../@shared/usecase/useCaseInterface";
 import Client from "../../domain/client";
 import ClientGateway from "../../gateway/clientGateway";
 import { AddClientInputDto, AddClientOutputDto } from "./addClientDto";
 
 // classe que define o caso de uso
-export default class AddClientUseCase {
+export default class AddClientUseCase implements UseCaseInterface {
   // injetando o repository
   private _clientRepository: ClientGateway;
 

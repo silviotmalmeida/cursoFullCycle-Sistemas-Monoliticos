@@ -1,9 +1,10 @@
 // dependências
+import UseCaseInterface from "../../../@shared/usecase/useCaseInterface";
 import ProductGateway from "../../gateway/productGateway";
 import { FindProductInputDto, FindProductOutputDto } from "./findProductDto";
 
 // classe que define o caso de uso
-export default class FindProductUseCase {
+export default class FindProductUseCase implements UseCaseInterface {
   // injetando o repository
   private _productRepository: ProductGateway;
 
