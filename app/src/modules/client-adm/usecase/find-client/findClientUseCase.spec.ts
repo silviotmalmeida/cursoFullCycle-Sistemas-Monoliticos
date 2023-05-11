@@ -3,7 +3,7 @@ import Id from "../../../@shared/domain/value-object/id";
 import Client from "../../domain/client";
 import FindClientUseCase from "./findClientUseCase";
 
-// criando o product
+// criando o client
 const client = new Client({
   Id: new Id("1"),
   name: "Client 1",

@@ -1,12 +1,19 @@
 // dependências
+import Id from "../../../@shared/domain/value-object/id";
+import Client from "../../domain/client";
+import { PlaceOrderInputDto } from "./placeOrderDto";
 import PlaceOrderUseCase from "./placeOrderUseCase";
 
-// configurando o mock do repository
-const MockRepository = () => {
-  return {
-    addOrder: jest.fn(), // o método add não retorna nada
-    findOrder: jest.fn(), // o método find não retorna nada
-  };
+// configurando o mock da ClientFacade
+const MockClientFacade = {
+  add: jest.fn().mockResolvedValue(null), // o método add retorna null
+  find: jest.fn().mockResolvedValue(null), // o método find retorna null
+};
+
+// configurando o mock da ProductFacade
+const MockProductFacade = {
+  addProduct: jest.fn().mockResolvedValue(null), // o método add retorna null
+  checkStock: jest.fn().mockResolvedValue(null), // o método find retorna null
 };
 
 // suíde de testes de unidade do caso de uso
@@ -14,26 +21,103 @@ describe("Place Order Usecase unit test", () => {
   describe("execute method", () => {
     // se o cliente não existir, deve-se lançar um erro
     it("should throw an error when client not found", async () => {
-      // configurando o mock da facade
-      const MockClientFacade = {
-        find: jest.fn().mockResolvedValue(null), // o método find retorna null
-      };
-
       // criando o caso de uso
-      // @ts-expect-error - no params in constructor
-      const usecase = new PlaceOrderUseCase();
-      // @ts-expect-error - force set clientFacade
-      usecase["_clientFacade"] = MockClientFacade;
+      const usecase = new PlaceOrderUseCase(
+        MockClientFacade,
+        MockProductFacade
+      );
 
       // definindo o input do caso de uso
-      const input = {
+      const input: PlaceOrderInputDto = {
         clientId: "0",
         products: [{ productId: "0" }],
       };
 
+      // verificando a execução
       await expect(usecase.execute(input)).rejects.toThrow(
         new Error("Client not found")
       );
+      expect(MockClientFacade.find).toHaveBeenCalledTimes(1);
+    });
+
+    // se os produtos não forem válidos, deve-se lançar um erro
+    it("should throw an error when products are not valid", async () => {
+      // criando o client
+      const client = new Client({
+        Id: new Id("1"),
+        name: "Client 1",
+        email: "x@x.com",
+        address: "Address 1",
+      });
+
+      // ajustando o mock da ClientFacade
+      MockClientFacade.find = jest
+        .fn()
+        .mockResolvedValue(Promise.resolve(client)); // o método find retorna o client criado
+
+      // criando o caso de uso
+      const usecase = new PlaceOrderUseCase(
+        MockClientFacade,
+        MockProductFacade
+      );
+
+      // definindo o input do caso de uso
+      const input: PlaceOrderInputDto = {
+        clientId: "1",
+        products: [],
+      };
+
+      // verificando a execução
+      await expect(usecase.execute(input)).rejects.toThrow(
+        new Error("No products selected")
+      );
+      expect(MockClientFacade.find).toHaveBeenCalledTimes(1);
+      expect(MockProductFacade.checkStock).toHaveBeenCalledTimes(0);
+    });
+
+    // se os produtos não forem válidos, deve-se lançar um erro
+    it("should throw an error when product is out of stock", async () => {
+      // criando o client
+      const client = new Client({
+        Id: new Id("1"),
+        name: "Client 1",
+        email: "x@x.com",
+        address: "Address 1",
+      });
+
+      // criando função para retornar stock zero para produtos com id 1
+      const productOutput = ({ productId }: { productId: string }) =>
+        Promise.resolve({
+          productId,
+          stock: productId === "1" ? 0 : 1,
+        });
+
+      // ajustando o mock da ClientFacade
+      MockClientFacade.find = jest
+        .fn()
+        .mockResolvedValue(Promise.resolve(client)); // o método find retorna o client criado
+
+      // ajustando o mock da ProductFacade
+      MockProductFacade.checkStock = jest.fn(productOutput); // o método checkStock retorna conforme definido na função
+
+      // criando o caso de uso
+      const usecase = new PlaceOrderUseCase(
+        MockClientFacade,
+        MockProductFacade
+      );
+
+      // definindo o input do caso de uso
+      const input: PlaceOrderInputDto = {
+        clientId: "1",
+        products: [{ productId: "0" }, { productId: "1" }, { productId: "2" }],
+      };
+
+      // verificando a execução
+      await expect(usecase.execute(input)).rejects.toThrow(
+        new Error("Product 1 is not available in stock")
+      );
+      expect(MockClientFacade.find).toHaveBeenCalledTimes(1);
+      expect(MockProductFacade.checkStock).toHaveBeenCalledTimes(2);
     });
 
     // // quando gerar um invoice, os dados devem estar coerentes com o input informado
