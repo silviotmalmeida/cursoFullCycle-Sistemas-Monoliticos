@@ -1,6 +1,7 @@
 // dependências
-import Id from "../../../@shared/domain/value-object/id";
-import Client from "../../domain/client";
+import ClientAdmFacade from "../../../client-adm/facade/clientAdmFacade";
+import { FindClientFacadeOutputDto } from "../../../client-adm/facade/clientAdmFacadeInterface";
+import { CheckStockFacadeOutputDto } from "../../../product-adm/facade/productAdmFacadeInterface";
 import { PlaceOrderInputDto } from "./placeOrderDto";
 import PlaceOrderUseCase from "./placeOrderUseCase";
 
@@ -16,15 +17,35 @@ const MockProductFacade = {
   checkStock: jest.fn().mockResolvedValue(null), // o método find retorna null
 };
 
+// configurando o mock da CatalogFacade
+const MockCatalogFacade = {
+  find: jest.fn().mockResolvedValue(null), // o método find retorna null
+  findAll: jest.fn().mockResolvedValue(null), // o método findAll retorna null
+};
+
+// criando a data mocada
+const mockDate = new Date(2000, 1, 1);
 // suíde de testes de unidade do caso de uso
 describe("Place Order Usecase unit test", () => {
+  // método a ser executado antes dos testes
+  beforeAll(() => {
+    jest.useFakeTimers("modern");
+    jest.setSystemTime(mockDate);
+  });
+
+  // método a ser executado após os testes
+  afterAll(() => {
+    jest.useRealTimers();
+  });
+
   describe("execute method", () => {
     // se o cliente não existir, deve-se lançar um erro
     it("should throw an error when client not found", async () => {
       // criando o caso de uso
       const usecase = new PlaceOrderUseCase(
         MockClientFacade,
-        MockProductFacade
+        MockProductFacade,
+        MockCatalogFacade
       );
 
       // definindo o input do caso de uso
@@ -42,13 +63,15 @@ describe("Place Order Usecase unit test", () => {
 
     // se os produtos não forem válidos, deve-se lançar um erro
     it("should throw an error when products are not valid", async () => {
-      // criando o client
-      const client = new Client({
-        Id: new Id("1"),
+      // criando o mock retorno do método find da clientFacade
+      const client: FindClientFacadeOutputDto = {
+        id: "1",
         name: "Client 1",
         email: "x@x.com",
         address: "Address 1",
-      });
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
 
       // ajustando o mock da ClientFacade
       MockClientFacade.find = jest
@@ -58,7 +81,8 @@ describe("Place Order Usecase unit test", () => {
       // criando o caso de uso
       const usecase = new PlaceOrderUseCase(
         MockClientFacade,
-        MockProductFacade
+        MockProductFacade,
+        MockCatalogFacade
       );
 
       // definindo o input do caso de uso
@@ -75,18 +99,25 @@ describe("Place Order Usecase unit test", () => {
       expect(MockProductFacade.checkStock).toHaveBeenCalledTimes(0);
     });
 
-    // se os produtos não forem válidos, deve-se lançar um erro
+    // se os produtos não possuírem estoque, deve-se lançar um erro
     it("should throw an error when product is out of stock", async () => {
-      // criando o client
-      const client = new Client({
-        Id: new Id("1"),
+      // criando o mock retorno do método find da clientFacade
+      const client: FindClientFacadeOutputDto = {
+        id: "1",
         name: "Client 1",
         email: "x@x.com",
         address: "Address 1",
-      });
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
 
+      // criando o mock retorno do método checkStock da productFacade
       // criando função para retornar stock zero para produtos com id 1
-      const productOutput = ({ productId }: { productId: string }) =>
+      const productOutput = ({
+        productId,
+      }: {
+        productId: string;
+      }): Promise<CheckStockFacadeOutputDto> =>
         Promise.resolve({
           productId,
           stock: productId === "1" ? 0 : 1,
@@ -103,7 +134,8 @@ describe("Place Order Usecase unit test", () => {
       // criando o caso de uso
       const usecase = new PlaceOrderUseCase(
         MockClientFacade,
-        MockProductFacade
+        MockProductFacade,
+        MockCatalogFacade
       );
 
       // definindo o input do caso de uso
@@ -118,6 +150,60 @@ describe("Place Order Usecase unit test", () => {
       );
       expect(MockClientFacade.find).toHaveBeenCalledTimes(1);
       expect(MockProductFacade.checkStock).toHaveBeenCalledTimes(2);
+    });
+
+    // se os produtos não forem encontrados, deve-se lançar um erro
+    it("should throw an error when product not found", async () => {
+      // criando o mock retorno do método find da clientFacade
+      const client: FindClientFacadeOutputDto = {
+        id: "1",
+        name: "Client 1",
+        email: "x@x.com",
+        address: "Address 1",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+
+      // criando o mock retorno do método checkStock da productFacade
+      // criando função para retornar stock zero para produtos com id 1
+      const productOutput = ({
+        productId,
+      }: {
+        productId: string;
+      }): Promise<CheckStockFacadeOutputDto> =>
+        Promise.resolve({
+          productId,
+          stock: productId === "1" ? 0 : 1,
+        });
+
+      // ajustando o mock da ClientFacade
+      MockClientFacade.find = jest
+        .fn()
+        .mockResolvedValue(Promise.resolve(client)); // o método find retorna o client criado
+
+      // ajustando o mock da ProductFacade
+      MockProductFacade.checkStock = jest.fn(productOutput); // o método checkStock retorna conforme definido na função
+
+      // criando o caso de uso
+      const usecase = new PlaceOrderUseCase(
+        MockClientFacade,
+        MockProductFacade,
+        MockCatalogFacade
+      );
+
+      // definindo o input do caso de uso
+      const input: PlaceOrderInputDto = {
+        clientId: "1",
+        products: [{ productId: "0" }, { productId: "2" }, { productId: "3" }],
+      };
+
+      // verificando a execução
+      await expect(usecase.execute(input)).rejects.toThrow(
+        new Error("Product 0 not found")
+      );
+      expect(MockClientFacade.find).toHaveBeenCalledTimes(1);
+      expect(MockProductFacade.checkStock).toHaveBeenCalledTimes(3);
+      expect(MockCatalogFacade.find).toHaveBeenCalledTimes(1);
     });
 
     // // quando gerar um invoice, os dados devem estar coerentes com o input informado

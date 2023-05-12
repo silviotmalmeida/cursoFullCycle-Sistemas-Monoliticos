@@ -1,7 +1,10 @@
 // dependências
+import Id from "../../../@shared/domain/value-object/id";
 import UseCaseInterface from "../../../@shared/usecase/useCaseInterface";
 import ClientAdmFacadeInterface from "../../../client-adm/facade/clientAdmFacadeInterface";
 import ProductAdmFacadeInterface from "../../../product-adm/facade/productAdmFacadeInterface";
+import StoreCatalogFacadeInterface from "../../../store-catalog/facade/storeCatalogFacadeInterface";
+import Product from "../../domain/product";
 import { PlaceOrderInputDto, PlaceOrderOutputDto } from "./placeOrderDto";
 
 // classe que define o caso de uso
@@ -9,14 +12,17 @@ export default class PlaceOrderUseCase implements UseCaseInterface {
   // injetando as facades
   private _clientFacade: ClientAdmFacadeInterface;
   private _productFacade: ProductAdmFacadeInterface;
+  private _catalogFacade: StoreCatalogFacadeInterface;
 
   // construtor
   constructor(
     clientFacade: ClientAdmFacadeInterface,
-    productFacade: ProductAdmFacadeInterface
+    productFacade: ProductAdmFacadeInterface,
+    catalogFacade: StoreCatalogFacadeInterface
   ) {
     this._clientFacade = clientFacade;
     this._productFacade = productFacade;
+    this._catalogFacade = catalogFacade;
   }
 
   // método de execução
@@ -27,6 +33,10 @@ export default class PlaceOrderUseCase implements UseCaseInterface {
 
     // verificando a existência de produtos
     await this.validateProducts(input);
+
+    for (const p of input.products) {
+      await this.getProduct(p.productId);
+    }
 
     // // criando o address a partir do input
     // const address = new Address(
@@ -76,7 +86,7 @@ export default class PlaceOrderUseCase implements UseCaseInterface {
     };
   }
 
-  async validateProducts(input: PlaceOrderInputDto): Promise<void> {
+  private async validateProducts(input: PlaceOrderInputDto): Promise<void> {
     if (input.products.length === 0) throw new Error("No products selected");
 
     for (const p of input.products) {
@@ -89,5 +99,22 @@ export default class PlaceOrderUseCase implements UseCaseInterface {
         );
       }
     }
+  }
+
+  private async getProduct(productId: string): Promise<Product> {
+    const product = await this._catalogFacade.find({
+      id: productId,
+    });
+    if (!product) {
+      throw new Error(`Product ${productId} not found`);
+    }
+    const productProps = {
+      Id: new Id(product.id),
+      name: product.name,
+      description: product.description,
+      salesPrice: product.salesPrice,
+    };
+
+    return new Product(productProps);
   }
 }
