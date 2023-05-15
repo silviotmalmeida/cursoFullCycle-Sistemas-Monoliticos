@@ -2,8 +2,12 @@
 import Id from "../../../@shared/domain/value-object/id";
 import UseCaseInterface from "../../../@shared/usecase/useCaseInterface";
 import ClientAdmFacadeInterface from "../../../client-adm/facade/clientAdmFacadeInterface";
+import InvoiceFacadeInterface from "../../../invoice/facade/invoiceFacadeInterface";
+import PaymentFacadeInterface from "../../../payment/facade/paymentFacadeInterface";
 import ProductAdmFacadeInterface from "../../../product-adm/facade/productAdmFacadeInterface";
 import StoreCatalogFacadeInterface from "../../../store-catalog/facade/storeCatalogFacadeInterface";
+import Client from "../../domain/client";
+import Order from "../../domain/order";
 import Product from "../../domain/product";
 import { PlaceOrderInputDto, PlaceOrderOutputDto } from "./placeOrderDto";
 
@@ -13,16 +17,22 @@ export default class PlaceOrderUseCase implements UseCaseInterface {
   private _clientFacade: ClientAdmFacadeInterface;
   private _productFacade: ProductAdmFacadeInterface;
   private _catalogFacade: StoreCatalogFacadeInterface;
+  private _invoiceFacade: InvoiceFacadeInterface;
+  private _paymentFacade: PaymentFacadeInterface;
 
   // construtor
   constructor(
     clientFacade: ClientAdmFacadeInterface,
     productFacade: ProductAdmFacadeInterface,
-    catalogFacade: StoreCatalogFacadeInterface
+    catalogFacade: StoreCatalogFacadeInterface,
+    invoiceFacade: InvoiceFacadeInterface,
+    paymentFacade: PaymentFacadeInterface
   ) {
     this._clientFacade = clientFacade;
     this._productFacade = productFacade;
     this._catalogFacade = catalogFacade;
+    this._invoiceFacade = invoiceFacade;
+    this._paymentFacade = paymentFacade;
   }
 
   // método de execução
@@ -34,9 +44,21 @@ export default class PlaceOrderUseCase implements UseCaseInterface {
     // verificando a existência de produtos
     await this.validateProducts(input);
 
-    for (const p of input.products) {
-      await this.getProduct(p.productId);
-    }
+    // criando os Products
+    const products = await Promise.all(
+      input.products.map((p) => this.getProduct(p.productId))
+    );
+
+    // criando o Client
+    const myClient = new Client({
+      Id: new Id(client.id),
+      name: client.name,
+      email: client.email,
+      address: client.address,
+    });
+
+    // criando a order
+    const order = new Order({ Client: myClient, Products: products });
 
     // // criando o address a partir do input
     // const address = new Address(

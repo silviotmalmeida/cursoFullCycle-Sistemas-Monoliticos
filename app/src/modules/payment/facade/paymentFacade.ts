@@ -3,7 +3,7 @@ import UseCaseInterface from "../../@shared/usecase/useCaseInterface";
 import PaymentFacadeInterface, {
   PaymentFacadeInputDto,
   PaymentFacadeOutputDto,
-} from "./facadeInterface";
+} from "./paymentFacadeInterface";
 
 // agrupando os casos de uso para ser utilizado no construtor
 export interface UseCaseProps {

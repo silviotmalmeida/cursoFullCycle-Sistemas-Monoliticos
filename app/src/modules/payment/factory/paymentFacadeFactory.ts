@@ -1,5 +1,5 @@
 // dependências
-import PaymentFacadeInterface from "../facade/facadeInterface";
+import PaymentFacadeInterface from "../facade/paymentFacadeInterface";
 import PaymentFacade from "../facade/paymentFacade";
 import TransactionRepostiory from "../repository/transactionRepository";
 import ProcessPaymentUseCase from "../usecase/process-payment/processPaymentUseCase";
