@@ -61,7 +61,9 @@ describe("Place Order Usecase unit test", () => {
       const usecase = new PlaceOrderUseCase(
         MockClientFacade,
         MockProductFacade,
-        MockCatalogFacade
+        MockCatalogFacade,
+        MockInvoiceFacade,
+        MockPaymentFacade
       );
 
       // definindo o input do caso de uso
@@ -98,7 +100,9 @@ describe("Place Order Usecase unit test", () => {
       const usecase = new PlaceOrderUseCase(
         MockClientFacade,
         MockProductFacade,
-        MockCatalogFacade
+        MockCatalogFacade,
+        MockInvoiceFacade,
+        MockPaymentFacade
       );
 
       // definindo o input do caso de uso
@@ -151,7 +155,9 @@ describe("Place Order Usecase unit test", () => {
       const usecase = new PlaceOrderUseCase(
         MockClientFacade,
         MockProductFacade,
-        MockCatalogFacade
+        MockCatalogFacade,
+        MockInvoiceFacade,
+        MockPaymentFacade
       );
 
       // definindo o input do caso de uso
@@ -204,7 +210,9 @@ describe("Place Order Usecase unit test", () => {
       const usecase = new PlaceOrderUseCase(
         MockClientFacade,
         MockProductFacade,
-        MockCatalogFacade
+        MockCatalogFacade,
+        MockInvoiceFacade,
+        MockPaymentFacade
       );
 
       // definindo o input do caso de uso
@@ -271,7 +279,9 @@ describe("Place Order Usecase unit test", () => {
       const usecase = new PlaceOrderUseCase(
         MockClientFacade,
         MockProductFacade,
-        MockCatalogFacade
+        MockCatalogFacade,
+        MockInvoiceFacade,
+        MockPaymentFacade
       );
 
       // definindo o input do caso de uso
@@ -337,7 +347,6 @@ describe("Place Order Usecase unit test", () => {
         MockClientFacade,
         MockProductFacade,
         MockCatalogFacade,
-        MockCheckoutRepository,
         MockInvoiceFacade,
         MockPaymentFacade
       );
