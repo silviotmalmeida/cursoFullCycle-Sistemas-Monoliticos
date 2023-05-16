@@ -9,6 +9,7 @@ import StoreCatalogFacadeInterface from "../../../store-catalog/facade/storeCata
 import Client from "../../domain/client";
 import Order from "../../domain/order";
 import Product from "../../domain/product";
+import CheckoutGateway from "../../gateway/checkoutGateway";
 import { PlaceOrderInputDto, PlaceOrderOutputDto } from "./placeOrderDto";
 
 // classe que define o caso de uso
@@ -19,6 +20,7 @@ export default class PlaceOrderUseCase implements UseCaseInterface {
   private _catalogFacade: StoreCatalogFacadeInterface;
   private _invoiceFacade: InvoiceFacadeInterface;
   private _paymentFacade: PaymentFacadeInterface;
+  private _checkoutGateway: CheckoutGateway;
 
   // construtor
   constructor(
@@ -26,13 +28,15 @@ export default class PlaceOrderUseCase implements UseCaseInterface {
     productFacade: ProductAdmFacadeInterface,
     catalogFacade: StoreCatalogFacadeInterface,
     invoiceFacade: InvoiceFacadeInterface,
-    paymentFacade: PaymentFacadeInterface
+    paymentFacade: PaymentFacadeInterface,
+    checkoutGateway: CheckoutGateway
   ) {
     this._clientFacade = clientFacade;
     this._productFacade = productFacade;
     this._catalogFacade = catalogFacade;
     this._invoiceFacade = invoiceFacade;
     this._paymentFacade = paymentFacade;
+    this._checkoutGateway = checkoutGateway;
   }
 
   // método de execução
