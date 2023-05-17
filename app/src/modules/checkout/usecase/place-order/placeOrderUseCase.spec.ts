@@ -7,6 +7,132 @@ import PlaceOrderUseCase from "./placeOrderUseCase";
 
 // suíde de testes de unidade do caso de uso
 describe("Place Order Usecase unit test", () => {
+  // forçando a criação do caso de uso ignorando regras do construtor
+  // @ts-expect-error - no params in constructor
+  const usecase = new PlaceOrderUseCase();
+
+  // teste relacionados ao método validateProducts
+  describe("validateProducts method", () => {
+    // se os produtos não forem selecionados, deve-se lançar um erro
+    it("should throw an error when no products are selected", async () => {
+      // definindo o input do caso de uso
+      const input: PlaceOrderInputDto = {
+        clientId: "0",
+        products: [],
+      };
+
+      // verificando a execução
+      // executando o método privado validateProducts diretamente
+      await expect(usecase["validateProducts"](input)).rejects.toThrow(
+        new Error("No products selected")
+      );
+    });
+
+    // se os produtos não possuírem estoque, deve-se lançar um erro
+    it("should throw an error when product is out of stock", async () => {
+      // criando o mock retorno do método checkStock da productFacade
+      // criando função para retornar stock zero para produtos com id 1
+      const productOutput = ({
+        productId,
+      }: {
+        productId: string;
+      }): Promise<CheckStockFacadeOutputDto> =>
+        Promise.resolve({
+          productId,
+          stock: productId === "1" ? 0 : 1,
+        });
+
+      // configurando o mock da ProductFacade
+      const MockProductFacade = {
+        checkStock: jest.fn(productOutput), // o método checkStock retorna conforme definido na função
+      };
+
+      // forçando injeção da clientFacade
+      // @ts-expect-error - force set clientFacade
+      usecase["_productFacade"] = MockProductFacade;
+
+      // definindo o input do caso de uso
+      let input: PlaceOrderInputDto = {
+        clientId: "1",
+        products: [{ productId: "1" }],
+      };
+
+      // verificando a execução
+      // executando o método privado validateProducts diretamente
+      await expect(usecase["validateProducts"](input)).rejects.toThrow(
+        new Error("Product 1 is not available in stock")
+      );
+
+      // alterando o input do caso de uso
+      input = {
+        clientId: "1",
+        products: [{ productId: "0" }, { productId: "1" }],
+      };
+
+      // verificando a execução
+      // executando o método privado validateProducts diretamente
+      await expect(usecase["validateProducts"](input)).rejects.toThrow(
+        new Error("Product 1 is not available in stock")
+      );
+      expect(MockProductFacade.checkStock).toHaveBeenCalledTimes(3);
+
+      // alterando o input do caso de uso
+      input = {
+        clientId: "1",
+        products: [{ productId: "0" }, { productId: "1" }, { productId: "2" }],
+      };
+
+      // verificando a execução
+      // executando o método privado validateProducts diretamente
+      await expect(usecase["validateProducts"](input)).rejects.toThrow(
+        new Error("Product 1 is not available in stock")
+      );
+      expect(MockProductFacade.checkStock).toHaveBeenCalledTimes(5);
+    });
+  });
+
+  // teste relacionados ao método getProducts
+  describe("getProducts method", () => {
+    // criando a data mocada
+    const mockDate = new Date(2000, 1, 1);
+
+    // método a ser executado antes dos testes
+    beforeAll(() => {
+      jest.useFakeTimers("modern");
+      jest.setSystemTime(mockDate);
+    });
+
+    // método a ser executado após os testes
+    afterAll(() => {
+      jest.useRealTimers();
+    });
+
+    // se os produtos não forem encontrados, deve-se lançar um erro
+    it("should throw an error when product not found", async () => {
+      // configurando o mock da CatalogFacade
+      const MockCatalogFacade = {
+        find: jest.fn().mockResolvedValue(null), // o método find retorna null
+      };
+
+      // forçando injeção da catalogFacade
+      // @ts-expect-error - force set clientFacade
+      usecase["_catalogFacade"] = MockCatalogFacade;
+
+      // definindo o input do caso de uso
+      const input: PlaceOrderInputDto = {
+        clientId: "1",
+        products: [{ productId: "0" }, { productId: "2" }, { productId: "3" }],
+      };
+
+      // verificando a execução
+      // executando o método privado getProduct diretamente
+      await expect(usecase["getProduct"]("0")).rejects.toThrow(
+        new Error("Product 0 not found")
+      );
+    });
+  });
+
+  // testes relacionados ao método execute
   describe("execute method", () => {
     // se o cliente não existir, deve-se lançar um erro
     it("should throw an error when client not found", async () => {
@@ -310,75 +436,7 @@ describe("Place Order Usecase unit test", () => {
         expect(MockCatalogFacade.find).toHaveBeenCalledTimes(3);
       });
 
-      // se os produtos não forem encontrados, deve-se lançar um erro
-      it("should return a product", async () => {
-        // criando o mock retorno do método find da clientFacade
-        const client: FindClientFacadeOutputDto = {
-          id: "1",
-          name: "Client 1",
-          email: "x@x.com",
-          address: "Address 1",
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        };
-
-        // criando o mock retorno do método checkStock da productFacade
-        // criando função para retornar stock zero para produtos com id 1
-        const productOutput = ({
-          productId,
-        }: {
-          productId: string;
-        }): Promise<CheckStockFacadeOutputDto> =>
-          Promise.resolve({
-            productId,
-            stock: productId === "1" ? 0 : 1,
-          });
-
-        // criando o mock retorno do método find da catalogFacade
-        const catalog: FindStoreCatalogFacadeOutputDto = {
-          id: "0",
-          name: "Product 0",
-          description: "Product 0 description",
-          salesPrice: 0,
-        };
-
-        // ajustando o mock da ClientFacade
-        MockClientFacade.find = jest
-          .fn()
-          .mockResolvedValue(Promise.resolve(client)); // o método find retorna o client criado
-
-        // ajustando o mock da ProductFacade
-        MockProductFacade.checkStock = jest.fn(productOutput); // o método checkStock retorna conforme definido na função
-
-        // ajustando o mock da CatalogFacade
-        MockCatalogFacade.find = jest
-          .fn()
-          .mockResolvedValue(Promise.resolve(catalog)); // o método find retorna o catalog criado
-
-        // criando o caso de uso
-        const usecase = new PlaceOrderUseCase(
-          MockClientFacade,
-          MockProductFacade,
-          MockCatalogFacade,
-          MockInvoiceFacade,
-          MockPaymentFacade,
-          MockCheckoutGateway
-        );
-
-        // definindo o input do caso de uso
-        const input: PlaceOrderInputDto = {
-          clientId: "1",
-          products: [{ productId: "0" }],
-        };
-
-        // verificando a execução
-        await usecase.execute(input);
-        expect(MockClientFacade.find).toHaveBeenCalledTimes(1);
-        expect(MockProductFacade.checkStock).toHaveBeenCalledTimes(1);
-        expect(MockCatalogFacade.find).toHaveBeenCalledTimes(1);
-      });
-
-      // se os produtos não forem encontrados, deve-se lançar um erro
+      // deve-se retornar produtos
       it("should return a product", async () => {
         // criando o mock retorno do método find da clientFacade
         const client: FindClientFacadeOutputDto = {
