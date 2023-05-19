@@ -58,57 +58,63 @@ export default class PlaceOrderUseCase implements UseCaseInterface {
       Id: new Id(client.id),
       name: client.name,
       email: client.email,
-      address: client.address,
+      street: client.street,
+      number: client.number,
+      complement: client.complement,
+      city: client.city,
+      state: client.state,
+      zipCode: client.zipCode,
     });
 
     // criando a order
     const order = new Order({ Client: myClient, Products: products });
 
-    // // criando o address a partir do input
-    // const address = new Address(
-    //   input.street,
-    //   input.number,
-    //   input.complement,
-    //   input.city,
-    //   input.state,
-    //   input.zipCode
-    // );
+    // processando o pagamento
+    const payment = await this._paymentFacade.process({
+      orderId: order.Id.id,
+      amount: order.total(),
+    });
 
-    // // criando os products a partir do input
-    // const items = input.items.map((item) => {
-    //   return new Product({
-    //     Id: new Id(item.id) || new Id(),
-    //     name: item.name,
-    //     price: item.price,
-    //   });
-    // });
+    // criando o invoice
+    const invoice =
+      // somente se o status for approved
+      payment.status === "approved"
+        ? await this._invoiceFacade.generate({
+            name: client.name,
+            document: "documento",
+            street: client.street,
+            number: client.number,
+            complement: client.complement,
+            city: client.city,
+            state: client.state,
+            zipCode: client.zipCode,
+            items: products.map((p) => {
+              return {
+                id: p.Id.id,
+                name: p.name,
+                price: p.salesPrice,
+              };
+            }),
+          })
+        : null;
 
-    // // obtendo as propriedades para criação do invoice a partir do input
-    // const props = {
-    //   Id: new Id(input.id),
-    //   name: input.name,
-    //   document: input.document,
-    //   Address: address,
-    //   items: items,
-    // };
+    // aprovando a order
+    payment.status === "approved" && order.approved();
 
-    // // criando o invoice
-    // const invoice = new Invoice(props);
-
-    // // adicionando no BD utilizando o repository
-    // await this._invoiceRepository.generate(invoice);
+    // persistindo a order
+    this._checkoutGateway.addOrder(order);
 
     // retornando o output conforme padrão do dto
     return {
-      id: "",
-      invoiceId: "",
-      status: "",
-      total: 0.0,
-      products: [
-        {
-          productId: "",
-        },
-      ],
+      id: order.Id.id,
+      invoiceId: payment.status === "approved" ? invoice.id : null,
+      status: order.status,
+      total: order.total(),
+      products: order.Products.map((p) => {
+        return {
+          productId: p.Id.id,
+        };
+      }),
     };
   }
 

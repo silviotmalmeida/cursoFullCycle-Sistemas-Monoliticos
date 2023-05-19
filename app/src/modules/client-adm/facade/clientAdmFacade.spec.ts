@@ -37,7 +37,12 @@ describe("ClientAdmFacade test", () => {
       id: "1",
       name: "Client 1",
       email: "x@x.com",
-      address: "Address 1",
+      street: "some address",
+      number: "1",
+      complement: "",
+      city: "some city",
+      state: "some state",
+      zipCode: "000",
     };
 
     // criando a facade utilizando a factory
@@ -54,7 +59,12 @@ describe("ClientAdmFacade test", () => {
     expect(client.id).toBe(input.id);
     expect(client.name).toBe(input.name);
     expect(client.email).toBe(input.email);
-    expect(client.address).toBe(input.address);
+    expect(client.street).toBe(input.street);
+    expect(client.number).toBe(input.number);
+    expect(client.complement).toBe(input.complement);
+    expect(client.city).toBe(input.city);
+    expect(client.state).toBe(input.state);
+    expect(client.zipCode).toBe(input.zipCode);
   });
 
   // se for realizada uma busca por id, seus atributos devem ser iguais aos do objeto de origem
@@ -64,7 +74,12 @@ describe("ClientAdmFacade test", () => {
       id: "1",
       name: "Client 1",
       email: "x@x.com",
-      address: "Address 1",
+      street: "some address",
+      number: "1",
+      complement: "",
+      city: "some city",
+      state: "some state",
+      zipCode: "000",
       createdAt: new Date(),
       updatedAt: new Date(),
     });
@@ -79,6 +94,11 @@ describe("ClientAdmFacade test", () => {
     expect(client.id).toBe("1");
     expect(client.name).toBe("Client 1");
     expect(client.email).toBe("x@x.com");
-    expect(client.address).toBe("Address 1");
+    expect(client.street).toBe("some address");
+    expect(client.number).toBe("1");
+    expect(client.complement).toBe("");
+    expect(client.city).toBe("some city");
+    expect(client.state).toBe("some state");
+    expect(client.zipCode).toBe("000");
   });
 });

@@ -4,6 +4,7 @@ import InvoiceFacadeInterface, {
   GenerateInvoiceFacadeInputDto,
   FindInvoiceFacadeInputDto,
   FindInvoiceFacadeOutputDto,
+  GenerateInvoiceFacadeOutputDto,
 } from "./invoiceFacadeInterface";
 
 // agrupando os casos de uso para ser utilizado no construtor
@@ -25,9 +26,11 @@ export default class InvoiceFacade implements InvoiceFacadeInterface {
   }
 
   // método de criação
-  async generate(input: GenerateInvoiceFacadeInputDto): Promise<void> {
+  async generate(
+    input: GenerateInvoiceFacadeInputDto
+  ): Promise<GenerateInvoiceFacadeOutputDto> {
     // utilizando o caso de uso
-    await this._generateUsecase.execute(input);
+    return await this._generateUsecase.execute(input);
   }
 
   // método de busca por id

@@ -22,7 +22,12 @@ export default class AddClientUseCase implements UseCaseInterface {
       Id: new Id(input.id) || new Id(),
       name: input.name,
       email: input.email,
-      address: input.address,
+      street: input.street,
+      number: input.number,
+      complement: input.complement,
+      city: input.city,
+      state: input.state,
+      zipCode: input.zipCode,
     };
 
     // criando o client
@@ -36,7 +41,12 @@ export default class AddClientUseCase implements UseCaseInterface {
       id: client.Id.id,
       name: client.name,
       email: client.email,
-      address: client.address,
+      street: client.street,
+      number: client.number,
+      complement: client.complement,
+      city: client.city,
+      state: client.state,
+      zipCode: client.zipCode,
       createdAt: client.createdAt,
       updatedAt: client.updatedAt,
     };
