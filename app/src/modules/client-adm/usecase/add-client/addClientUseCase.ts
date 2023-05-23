@@ -21,6 +21,7 @@ export default class AddClientUseCase implements UseCaseInterface {
     const props = {
       Id: new Id(input.id) || new Id(),
       name: input.name,
+      document: input.document,
       email: input.email,
       street: input.street,
       number: input.number,
@@ -40,6 +41,7 @@ export default class AddClientUseCase implements UseCaseInterface {
     return {
       id: client.Id.id,
       name: client.name,
+      document: input.document,
       email: client.email,
       street: client.street,
       number: client.number,

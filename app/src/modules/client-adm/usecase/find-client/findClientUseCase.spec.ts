@@ -7,6 +7,7 @@ import FindClientUseCase from "./findClientUseCase";
 const client = new Client({
   Id: new Id("1"),
   name: "Client 1",
+  document: "00000",
   email: "x@x.com",
   street: "some address",
   number: "1",
@@ -45,6 +46,7 @@ describe("Find Client Usecase unit test", () => {
     expect(repository.find).toHaveBeenCalled();
     expect(result.id).toEqual(input.id);
     expect(result.name).toEqual(client.name);
+    expect(result.document).toEqual(client.document);
     expect(result.email).toEqual(client.email);
     expect(result.street).toEqual(client.street);
     expect(result.number).toEqual(client.number);

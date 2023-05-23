@@ -38,6 +38,7 @@ describe("ClientRepository test", () => {
     const clientProps = {
       Id: new Id("1"),
       name: "Client 1",
+      document: "00000",
       email: "x@x.com",
       street: "some address",
       number: "1",
@@ -62,6 +63,7 @@ describe("ClientRepository test", () => {
     expect(clientDb).toBeDefined();
     expect(clientDb.id).toBe(client.Id.id);
     expect(clientDb.name).toBe(client.name);
+    expect(clientDb.document).toBe(client.document);
     expect(clientDb.email).toBe(client.email);
     expect(clientDb.street).toEqual(client.street);
     expect(clientDb.number).toEqual(client.number);
@@ -79,6 +81,7 @@ describe("ClientRepository test", () => {
     const client = await ClientModel.create({
       id: "1",
       name: "Client 1",
+      document: "00000",
       email: "x@x.com",
       street: "some address",
       number: "1",
@@ -97,6 +100,7 @@ describe("ClientRepository test", () => {
     // comparando-se os dados
     expect(result.Id.id).toEqual(client.id);
     expect(result.name).toEqual(client.name);
+    expect(result.document).toEqual(client.document);
     expect(result.email).toEqual(client.email);
     expect(result.street).toEqual(client.street);
     expect(result.number).toEqual(client.number);

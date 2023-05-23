@@ -36,6 +36,7 @@ describe("ClientAdmFacade test", () => {
     const input = {
       id: "1",
       name: "Client 1",
+      document: "00000",
       email: "x@x.com",
       street: "some address",
       number: "1",
@@ -58,6 +59,7 @@ describe("ClientAdmFacade test", () => {
     expect(client).toBeDefined();
     expect(client.id).toBe(input.id);
     expect(client.name).toBe(input.name);
+    expect(client.document).toBe(input.document);
     expect(client.email).toBe(input.email);
     expect(client.street).toBe(input.street);
     expect(client.number).toBe(input.number);
@@ -73,6 +75,7 @@ describe("ClientAdmFacade test", () => {
     await ClientModel.create({
       id: "1",
       name: "Client 1",
+      document: "00000",
       email: "x@x.com",
       street: "some address",
       number: "1",
@@ -93,6 +96,7 @@ describe("ClientAdmFacade test", () => {
     // comparando-se os dados
     expect(client.id).toBe("1");
     expect(client.name).toBe("Client 1");
+    expect(client.document).toBe("00000");
     expect(client.email).toBe("x@x.com");
     expect(client.street).toBe("some address");
     expect(client.number).toBe("1");

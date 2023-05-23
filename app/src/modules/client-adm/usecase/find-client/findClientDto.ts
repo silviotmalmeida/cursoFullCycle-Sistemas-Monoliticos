@@ -7,6 +7,7 @@ export interface FindClientInputDto {
 export interface FindClientOutputDto {
   id: string;
   name: string;
+  document: string;
   email: string;
   street: string;
   number: string;

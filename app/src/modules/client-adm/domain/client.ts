@@ -7,6 +7,7 @@ import Id from "../../@shared/domain/value-object/id";
 type ClientProps = {
   Id?: Id;
   name: string;
+  document: string;
   email: string;
   street: string;
   number: string;
@@ -22,6 +23,7 @@ type ClientProps = {
 export default class Client extends BaseEntity implements AggregateRoot {
   // atributos
   private _name: string;
+  private _document: string;
   private _email: string;
   private _street: string;
   private _number: string;
@@ -34,6 +36,7 @@ export default class Client extends BaseEntity implements AggregateRoot {
   constructor(props: ClientProps) {
     super(props.Id, props.createdAt, props.updatedAt);
     this._name = props.name;
+    this._document = props.document;
     this._email = props.email;
     this._street = props.street;
     this._number = props.number;
@@ -46,6 +49,10 @@ export default class Client extends BaseEntity implements AggregateRoot {
   // getters e setters necessários
   get name(): string {
     return this._name;
+  }
+
+  get document(): string {
+    return this._document;
   }
 
   get email(): string {

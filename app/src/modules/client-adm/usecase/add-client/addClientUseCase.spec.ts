@@ -21,6 +21,7 @@ describe("Add Client Usecase unit test", () => {
     // definindo o input do caso de uso
     const input = {
       name: "Client 1",
+      document: "00000",
       email: "x@x.com",
       street: "some address",
       number: "1",
@@ -37,6 +38,7 @@ describe("Add Client Usecase unit test", () => {
     expect(repository.add).toHaveBeenCalled();
     expect(result.id).toBeDefined();
     expect(result.name).toEqual(input.name);
+    expect(result.document).toEqual(input.document);
     expect(result.email).toEqual(input.email);
     expect(result.street).toEqual(input.street);
     expect(result.number).toEqual(input.number);

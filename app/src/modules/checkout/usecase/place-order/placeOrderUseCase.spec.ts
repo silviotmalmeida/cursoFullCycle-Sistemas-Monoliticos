@@ -233,23 +233,11 @@ describe("Place Order Usecase unit test", () => {
   });
 
   describe("place order", () => {
-    // const clientProps = {
-    //   Id: "1c",
-    //   name: "Client 0",
-    //   document: "0000",
-    //   email: "client@user.com",
-    //   street: "some address",
-    //   number: "1",
-    //   complement: "",
-    //   city: "some city",
-    //   state: "some state",
-    //   zipCode: "000",
-    // };
-
     // criando o mock retorno do método find da clientFacade
     const client: FindClientFacadeOutputDto = {
       id: "1c",
       name: "Client 0",
+      document: "00000",
       email: "client@user.com",
       street: "some address",
       number: "1",
@@ -357,7 +345,6 @@ describe("Place Order Usecase unit test", () => {
       ]);
       expect(MockClientFacade.find).toHaveBeenCalledTimes(1);
       expect(MockClientFacade.find).toHaveBeenCalledWith({ id: "1c" });
-      expect(MockClientFacade.find).toHaveBeenCalledTimes(1);
       expect(mockValidateProducts).toHaveBeenCalledTimes(1);
       expect(mockValidateProducts).toHaveBeenCalledWith(input);
       expect(mockGetProduct).toHaveBeenCalledTimes(2);
@@ -368,6 +355,69 @@ describe("Place Order Usecase unit test", () => {
         amount: output.total,
       });
       expect(MockInvoiceFacade.generate).toHaveBeenCalledTimes(0);
+    });
+
+    // caso seja aprovada
+    it("should be approved", async () => {
+      // alterando o comportamento da MockPaymentFacade
+      MockPaymentFacade.process = MockPaymentFacade.process.mockReturnValue({
+        transactionId: "1t",
+        orderId: "1o",
+        amount: 100,
+        status: "approved",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      });
+
+      // definindo o input do caso de uso
+      const input: PlaceOrderInputDto = {
+        clientId: "1c",
+        products: [{ productId: "1" }, { productId: "2" }],
+      };
+
+      // executando o caso de uso
+      let output: PlaceOrderOutputDto = await usecase.execute(input);
+
+      // verificando a execução
+      expect(output.invoiceId).toBe("1i");
+      expect(output.total).toBe(70);
+      expect(output.products).toStrictEqual([
+        { productId: "1" },
+        { productId: "2" },
+      ]);
+      expect(MockClientFacade.find).toHaveBeenCalledTimes(1);
+      expect(MockClientFacade.find).toHaveBeenCalledWith({ id: "1c" });
+      expect(mockValidateProducts).toHaveBeenCalledTimes(1);
+      expect(mockGetProduct).toHaveBeenCalledTimes(2);
+      expect(MockCheckoutGateway.addOrder).toHaveBeenCalledTimes(1);
+      expect(MockPaymentFacade.process).toHaveBeenCalledTimes(1);
+      expect(MockPaymentFacade.process).toHaveBeenCalledWith({
+        orderId: output.id,
+        amount: output.total,
+      });
+      expect(MockInvoiceFacade.generate).toHaveBeenCalledTimes(1);
+      expect(MockInvoiceFacade.generate).toHaveBeenCalledWith({
+        name: client.name,
+        document: client.document,
+        street: client.street,
+        number: client.number,
+        complement: client.complement,
+        city: client.city,
+        state: client.state,
+        zipCode: client.zipCode,
+        items: [
+          {
+            id: products["1"].Id.id,
+            name: products["1"].name,
+            price: products["1"].salesPrice,
+          },
+          {
+            id: products["2"].Id.id,
+            name: products["2"].name,
+            price: products["2"].salesPrice,
+          },
+        ],
+      });
     });
   });
 
@@ -454,6 +504,7 @@ describe("Place Order Usecase unit test", () => {
         const client: FindClientFacadeOutputDto = {
           id: "1",
           name: "Client 1",
+          document: "00000",
           email: "x@x.com",
           street: "some address",
           number: "1",
@@ -500,6 +551,7 @@ describe("Place Order Usecase unit test", () => {
         const client: FindClientFacadeOutputDto = {
           id: "1",
           name: "Client 1",
+          document: "00000",
           email: "x@x.com",
           street: "some address",
           number: "1",
@@ -565,6 +617,7 @@ describe("Place Order Usecase unit test", () => {
         const client: FindClientFacadeOutputDto = {
           id: "1",
           name: "Client 1",
+          document: "00000",
           email: "x@x.com",
           street: "some address",
           number: "1",
@@ -631,6 +684,7 @@ describe("Place Order Usecase unit test", () => {
         const client: FindClientFacadeOutputDto = {
           id: "1c",
           name: "Client 0",
+          document: "00000",
           email: "x@x.com",
           street: "some address",
           number: "1",
@@ -675,6 +729,16 @@ describe("Place Order Usecase unit test", () => {
           .fn()
           .mockResolvedValue(Promise.resolve(catalog)); // o método find retorna o catalog criado
 
+        // ajustando o mock da PaymentFacade
+        MockPaymentFacade.process = MockPaymentFacade.process.mockReturnValue({
+          transactionId: "1t",
+          orderId: "1o",
+          amount: 100,
+          status: "error",
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        });
+
         // criando o caso de uso
         const usecase = new PlaceOrderUseCase(
           MockClientFacade,
@@ -696,6 +760,7 @@ describe("Place Order Usecase unit test", () => {
         expect(MockClientFacade.find).toHaveBeenCalledTimes(1);
         expect(MockProductFacade.checkStock).toHaveBeenCalledTimes(1);
         expect(MockCatalogFacade.find).toHaveBeenCalledTimes(1);
+        expect(MockPaymentFacade.process).toHaveBeenCalledTimes(1);
       });
     });
   });

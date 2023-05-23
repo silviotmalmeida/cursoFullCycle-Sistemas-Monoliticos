@@ -20,7 +20,7 @@ export default class PlaceOrderUseCase implements UseCaseInterface {
   private _catalogFacade: StoreCatalogFacadeInterface;
   private _invoiceFacade: InvoiceFacadeInterface;
   private _paymentFacade: PaymentFacadeInterface;
-  private _checkoutGateway: CheckoutGateway;
+  private _checkoutRepository: CheckoutGateway;
 
   // construtor
   constructor(
@@ -29,14 +29,14 @@ export default class PlaceOrderUseCase implements UseCaseInterface {
     catalogFacade: StoreCatalogFacadeInterface,
     invoiceFacade: InvoiceFacadeInterface,
     paymentFacade: PaymentFacadeInterface,
-    checkoutGateway: CheckoutGateway
+    checkoutRepository: CheckoutGateway
   ) {
     this._clientFacade = clientFacade;
     this._productFacade = productFacade;
     this._catalogFacade = catalogFacade;
     this._invoiceFacade = invoiceFacade;
     this._paymentFacade = paymentFacade;
-    this._checkoutGateway = checkoutGateway;
+    this._checkoutRepository = checkoutRepository;
   }
 
   // método de execução
@@ -81,7 +81,7 @@ export default class PlaceOrderUseCase implements UseCaseInterface {
       payment.status === "approved"
         ? await this._invoiceFacade.generate({
             name: client.name,
-            document: "documento",
+            document: client.document,
             street: client.street,
             number: client.number,
             complement: client.complement,
@@ -102,7 +102,7 @@ export default class PlaceOrderUseCase implements UseCaseInterface {
     payment.status === "approved" && order.approved();
 
     // persistindo a order
-    this._checkoutGateway.addOrder(order);
+    this._checkoutRepository.addOrder(order);
 
     // retornando o output conforme padrão do dto
     return {

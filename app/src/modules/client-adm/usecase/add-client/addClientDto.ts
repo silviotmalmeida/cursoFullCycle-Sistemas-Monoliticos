@@ -2,6 +2,7 @@
 export interface AddClientInputDto {
   id?: string;
   name: string;
+  document: string;
   email: string;
   street: string;
   number: string;
@@ -15,6 +16,7 @@ export interface AddClientInputDto {
 export interface AddClientOutputDto {
   id: string;
   name: string;
+  document: string;
   email: string;
   street: string;
   number: string;
