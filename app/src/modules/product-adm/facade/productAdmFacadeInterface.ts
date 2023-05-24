@@ -7,6 +7,16 @@ export interface AddProductFacadeInputDto {
   purchasePrice: number;
   stock: number;
 }
+//// definindo o formato do output dto
+export interface AddProductFacadeOutputDto {
+  id: string;
+  name: string;
+  description: string;
+  purchasePrice: number;
+  stock: number;
+  createdAt: Date;
+  updatedAt: Date;
+}
 ////////////////////////////////////////////
 
 // busca de estoque
@@ -23,7 +33,9 @@ export interface CheckStockFacadeOutputDto {
 
 // definindo a interface da facade a ser divulgada ao mundo externo
 export default interface ProductAdmFacadeInterface {
-  addProduct(input: AddProductFacadeInputDto): Promise<void>;
+  addProduct(
+    input: AddProductFacadeInputDto
+  ): Promise<AddProductFacadeOutputDto>;
   checkStock(
     input: CheckStockFacadeInputDto
   ): Promise<CheckStockFacadeOutputDto>;

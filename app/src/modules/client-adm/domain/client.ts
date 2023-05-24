@@ -44,6 +44,9 @@ export default class Client extends BaseEntity implements AggregateRoot {
     this._city = props.city;
     this._state = props.state;
     this._zipCode = props.zipCode;
+
+    // autovalidação de consistência
+    this.validate();
   }
 
   // getters e setters necessários
@@ -81,5 +84,35 @@ export default class Client extends BaseEntity implements AggregateRoot {
 
   get zipCode(): string {
     return this._zipCode;
+  }
+
+  // método de autovalidação de consistência
+  validate(): boolean {
+    if (this._name.length === 0) {
+      throw new Error("Name is required");
+    }
+    if (this._document.length === 0) {
+      throw new Error("Document is required");
+    }
+    if (this._email.length === 0) {
+      throw new Error("Email is required");
+    }
+    if (this._street.length === 0) {
+      throw new Error("Street is required");
+    }
+    if (this._number.length === 0) {
+      throw new Error("Number is required");
+    }
+    if (this._city.length === 0) {
+      throw new Error("City is required");
+    }
+    if (this._state.length === 0) {
+      throw new Error("State is required");
+    }
+    if (this._zipCode.length === 0) {
+      throw new Error("ZipCode is required");
+    }
+
+    return true;
   }
 }

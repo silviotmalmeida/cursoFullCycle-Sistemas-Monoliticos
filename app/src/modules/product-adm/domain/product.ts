@@ -29,6 +29,9 @@ export default class Product extends BaseEntity implements AggregateRoot {
     this._description = props.description;
     this._purchasePrice = props.purchasePrice;
     this._stock = props.stock;
+
+    // autovalidação de consistência
+    this.validate();
   }
 
   // getters e setters necessários
@@ -62,5 +65,22 @@ export default class Product extends BaseEntity implements AggregateRoot {
 
   set purchasePrice(purchasePrice: number) {
     this._purchasePrice = purchasePrice;
+  }
+
+  // método de autovalidação de consistência
+  validate(): boolean {
+    if (this._name.length === 0) {
+      throw new Error("Name is required");
+    }
+    if (this._description.length === 0) {
+      throw new Error("Description is required");
+    }
+    if (this._purchasePrice < 0) {
+      throw new Error("Price must be greater or equal to zero");
+    }
+    if (this._stock < 0) {
+      throw new Error("Stock must be greater or equal to zero");
+    }
+    return true;
   }
 }

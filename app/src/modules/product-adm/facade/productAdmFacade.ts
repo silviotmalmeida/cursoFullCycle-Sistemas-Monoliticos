@@ -2,6 +2,7 @@
 import UseCaseInterface from "../../@shared/usecase/useCaseInterface";
 import ProductAdmFacadeInterface, {
   AddProductFacadeInputDto,
+  AddProductFacadeOutputDto,
   CheckStockFacadeInputDto,
   CheckStockFacadeOutputDto,
 } from "./productAdmFacadeInterface";
@@ -25,7 +26,9 @@ export default class ProductAdmFacade implements ProductAdmFacadeInterface {
   }
 
   // método de criação
-  addProduct(input: AddProductFacadeInputDto): Promise<void> {
+  addProduct(
+    input: AddProductFacadeInputDto
+  ): Promise<AddProductFacadeOutputDto> {
     // utilizando o caso de uso
     return this._addUsecase.execute(input);
   }
