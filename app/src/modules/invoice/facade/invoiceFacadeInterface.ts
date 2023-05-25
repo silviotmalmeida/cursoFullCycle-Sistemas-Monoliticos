@@ -67,7 +67,6 @@ export interface FindInvoiceFacadeOutputDto {
   }[];
   total: number;
   createdAt: Date;
-  updatedAt: Date;
 }
 ////////////////////////////////////////////
 

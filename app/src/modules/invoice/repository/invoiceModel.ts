@@ -6,7 +6,7 @@ import {
   Column,
   HasMany,
 } from "sequelize-typescript";
-import ProductModel from "./productModel";
+import ProductModel from "./invoiceProductModel";
 
 // definindo as características da tabela no db
 @Table({

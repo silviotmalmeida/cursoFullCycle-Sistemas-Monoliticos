@@ -1,7 +1,7 @@
 // dependências
 import { Sequelize } from "sequelize-typescript";
 import InvoiceModel from "./invoiceModel";
-import ProductModel from "./productModel";
+import InvoiceProductModel from "./invoiceProductModel";
 import Address from "../../@shared/domain/value-object/address";
 import Product from "../domain/product";
 import Id from "../../@shared/domain/value-object/id";
@@ -24,7 +24,7 @@ describe("Invoice repository test", () => {
     });
 
     // adicionando as models a serem consideradas na criação das tabelas
-    await sequelize.addModels([InvoiceModel, ProductModel]);
+    await sequelize.addModels([InvoiceModel, InvoiceProductModel]);
     // criando o db
     await sequelize.sync();
   });

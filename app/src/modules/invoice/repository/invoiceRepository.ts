@@ -5,7 +5,7 @@ import Invoice from "../domain/invoice";
 import Product from "../domain/product";
 import InvoiceGateway from "../gateway/invoiceGateway";
 import InvoiceModel from "./invoiceModel";
-import ProductModel from "./productModel";
+import ProductModel from "./invoiceProductModel";
 
 // classe de repositório do orm, implementando a interface de gateway
 export default class InvoiceRepository implements InvoiceGateway {

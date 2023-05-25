@@ -1,7 +1,7 @@
 // dependências
 import { Sequelize } from "sequelize-typescript";
 import InvoiceModel from "../repository/invoiceModel";
-import ProductModel from "../repository/productModel";
+import ProductModel from "../repository/invoiceProductModel";
 import InvoiceFacadeFactory from "../factory/invoiceFacadeFactory";
 import InvoiceRepository from "../repository/invoiceRepository";
 
