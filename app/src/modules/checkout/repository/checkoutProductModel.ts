@@ -1,5 +1,13 @@
 // dependências
-import { Table, Model, PrimaryKey, Column } from "sequelize-typescript";
+import {
+  Table,
+  Model,
+  PrimaryKey,
+  Column,
+  ForeignKey,
+  BelongsTo,
+} from "sequelize-typescript";
+import OrderModel from "./orderModel";
 
 // definindo as características da tabela no db
 @Table({
@@ -14,6 +22,14 @@ export default class CheckoutProductModel extends Model {
   @Column
   declare id: string;
 
+  // relacionamento com order
+  @ForeignKey(() => OrderModel)
+  @Column({ allowNull: false })
+  declare order_id: string;
+
+  @BelongsTo(() => OrderModel)
+  declare order: OrderModel;
+
   @Column({ allowNull: false })
   declare name: string;
 
@@ -22,10 +38,4 @@ export default class CheckoutProductModel extends Model {
 
   @Column({ allowNull: false })
   declare salesPrice: number;
-
-  @Column({ allowNull: false })
-  declare createdAt: Date;
-
-  @Column({ allowNull: false })
-  declare updatedAt: Date;
 }

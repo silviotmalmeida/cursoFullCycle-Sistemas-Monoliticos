@@ -13,7 +13,17 @@ export default class CheckoutRepository implements CheckoutGateway {
     await OrderModel.create(
       {
         id: order.Id.id,
-        client: order.Client,
+        client: {
+          id: order.Client.Id.id,
+          name: order.Client.name,
+          email: order.Client.email,
+          street: order.Client.street,
+          number: order.Client.number,
+          complement: order.Client.complement,
+          city: order.Client.city,
+          state: order.Client.state,
+          zipCode: order.Client.zipCode,
+        },
         products: order.Products.map((item) => ({
           id: item.Id.id,
           name: item.name,

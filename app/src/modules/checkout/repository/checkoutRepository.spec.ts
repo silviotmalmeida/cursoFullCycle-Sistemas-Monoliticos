@@ -1,17 +1,16 @@
 // dependências
 import { Sequelize } from "sequelize-typescript";
-import InvoiceModel from "./invoiceModel";
-import Address from "../../@shared/domain/value-object/address";
-import Product from "../domain/product";
 import Id from "../../@shared/domain/value-object/id";
-import Invoice from "../domain/invoice";
-import InvoiceRepository from "./invoiceRepository";
 import OrderModel from "./orderModel";
 import CheckoutProductModel from "./checkoutProductModel";
 import CheckoutClientModel from "./checkoutClientModel";
+import Client from "../domain/client";
+import Product from "../domain/product";
+import Order from "../domain/order";
+import CheckoutRepository from "./checkoutRepository";
 
 // criando a suíte de testes unitários
-describe("Invoice repository test", () => {
+describe("Checkout repository test", () => {
   // inicializando a variável do orm
   let sequelize: Sequelize;
 
@@ -26,7 +25,11 @@ describe("Invoice repository test", () => {
     });
 
     // adicionando as models a serem consideradas na criação das tabelas
-    await sequelize.addModels([OrderModel, CheckoutClientModel, CheckoutProductModel]);
+    await sequelize.addModels([
+      OrderModel,
+      CheckoutClientModel,
+      CheckoutProductModel,
+    ]);
     // criando o db
     await sequelize.sync();
   });
@@ -39,87 +42,89 @@ describe("Invoice repository test", () => {
 
   // se um registro for armazenado no db, seus atributos devem ser iguais aos do objeto de origem
   it("should generate a new order", async () => {
-    // criando o address
-    const address = new Address(
-      "Street 1",
-      "123",
-      "Complement 1",
-      "City 1",
-      "State 1",
-      "Zip123"
-    );
+    // criando o client
+    const client = new Client({
+      Id: new Id("1c"),
+      name: "Client 0",
+      email: "client@user.com",
+      street: "some address",
+      number: "1",
+      complement: "",
+      city: "some city",
+      state: "some state",
+      zipCode: "000",
+    });
 
     // criando os products
-    const product1 = new Product({
-      Id: new Id("p1"),
-      name: "Product 1",
-      price: 10.0,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    });
-    const product2 = new Product({
-      Id: new Id("p2"),
-      name: "Product 2",
-      price: 15.0,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    });
+    const products = [
+      new Product({
+        Id: new Id("1"),
+        name: "Product 1",
+        description: "some description",
+        salesPrice: 40,
+      }),
+      new Product({
+        Id: new Id("2"),
+        name: "Product 2",
+        description: "some description",
+        salesPrice: 30,
+      }),
+    ];
 
     // obtendo as propriedades para criação do invoice
     const props = {
-      Id: new Id("1"),
-      name: "Client 1",
-      document: "123456",
-      Address: address,
-      items: [product1, product2],
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      Id: new Id("1o"),
+      Client: client,
+      Products: products,
+      status: "pending",
     };
-    // criando o invoice
-    const invoice = new Invoice(props);
+    // criando a order
+    const order = new Order(props);
 
     // salvando no db utilizando os métodos do repository
-    const repository = new InvoiceRepository();
-    await repository.generate(invoice);
+    const repository = new CheckoutRepository();
+    await repository.addOrder(order);
 
     // consultando no db utilizando os métodos do orm
-    const invoiceDb = await InvoiceModel.findOne({
-      where: { id: "1" },
-      include: ["items"],
+    const orderDb = await OrderModel.findOne({
+      where: { id: "1o" },
+      include: ["client", "products"],
     });
 
     // comparando-se os dados
-    expect(invoiceDb.toJSON()).toStrictEqual({
-      id: invoice.Id.id,
-      name: invoice.name,
-      document: invoice.document,
-      street: invoice.Address.street,
-      number: invoice.Address.number,
-      complement: invoice.Address.complement,
-      city: invoice.Address.city,
-      state: invoice.Address.state,
-      zipCode: invoice.Address.zipCode,
-      items: [
+    expect(orderDb.toJSON()).toStrictEqual({
+      id: order.Id.id,
+      client: {
+        id: client.Id.id,
+        order_id: order.Id.id,
+        name: client.name,
+        email: client.email,
+        street: client.street,
+        number: client.number,
+        complement: client.complement,
+        city: client.city,
+        state: client.state,
+        zipCode: client.zipCode,
+      },
+      products: [
         {
-          id: product1.Id.id,
-          invoice_id: invoice.Id.id,
-          name: product1.name,
-          price: product1.price,
-          createdAt: product1.createdAt,
-          updatedAt: product1.updatedAt,
+          id: products[0].Id.id,
+          order_id: order.Id.id,
+          name: products[0].name,
+          description: products[0].description,
+          salesPrice: products[0].salesPrice,
         },
         {
-          id: product2.Id.id,
-          invoice_id: invoice.Id.id,
-          name: product2.name,
-          price: product2.price,
-          createdAt: product2.createdAt,
-          updatedAt: product2.updatedAt,
+          id: products[1].Id.id,
+          order_id: order.Id.id,
+          name: products[1].name,
+          description: products[1].description,
+          salesPrice: products[1].salesPrice,
         },
       ],
-      total: invoice.total(),
-      createdAt: invoice.createdAt,
-      updatedAt: invoice.updatedAt,
+      status: order.status,
+      createdAt: order.createdAt,
+      updatedAt: order.updatedAt,
     });
   });
 });
