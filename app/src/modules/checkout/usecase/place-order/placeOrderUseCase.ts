@@ -67,7 +67,11 @@ export default class PlaceOrderUseCase implements UseCaseInterface {
     });
 
     // criando a order
-    const order = new Order({ Client: myClient, Products: products });
+    const order = new Order({
+      Id: new Id(input.id),
+      Client: myClient,
+      Products: products,
+    });
 
     // processando o pagamento
     const payment = await this._paymentFacade.process({
@@ -102,7 +106,7 @@ export default class PlaceOrderUseCase implements UseCaseInterface {
     payment.status === "approved" && order.approved();
 
     // persistindo a order
-    this._checkoutRepository.addOrder(order);
+    await this._checkoutRepository.addOrder(order);
 
     // retornando o output conforme padrão do dto
     return {

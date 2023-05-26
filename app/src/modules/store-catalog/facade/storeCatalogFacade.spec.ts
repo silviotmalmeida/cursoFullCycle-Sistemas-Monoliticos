@@ -1,7 +1,7 @@
 // dependências
 import { Sequelize } from "sequelize-typescript";
 import StoreCatalogFacadeFactory from "../factory/storeCatalogFacadeFactory";
-import ProductModel from "../repository/productModel";
+import CatalogProductModel from "../repository/catalogProductModel";
 
 // criando a suíte de testes de unidade
 describe("StoreCatalogFacade test", () => {
@@ -19,7 +19,7 @@ describe("StoreCatalogFacade test", () => {
     });
 
     // adicionando as models a serem consideradas na criação das tabelas
-    await sequelize.addModels([ProductModel]);
+    await sequelize.addModels([CatalogProductModel]);
     // criando o db
     await sequelize.sync();
   });
@@ -33,7 +33,7 @@ describe("StoreCatalogFacade test", () => {
   // se for realizada uma busca por id, seus atributos devem ser iguais aos do objeto de origem
   it("should find a product", async () => {
     // criando o product utilizando o método do orm
-    await ProductModel.create({
+    await CatalogProductModel.create({
       id: "1",
       name: "Product 1",
       description: "Description 1",
@@ -56,13 +56,13 @@ describe("StoreCatalogFacade test", () => {
   // se for realizada uma busca, seus atributos devem ser iguais aos dos objetos de origem
   it("should find all products", async () => {
     // criando os products utilizando o método do orm
-    await ProductModel.create({
+    await CatalogProductModel.create({
       id: "1",
       name: "Product 1",
       description: "Description 1",
       salesPrice: 100,
     });
-    await ProductModel.create({
+    await CatalogProductModel.create({
       id: "2",
       name: "Product 2",
       description: "Description 2",

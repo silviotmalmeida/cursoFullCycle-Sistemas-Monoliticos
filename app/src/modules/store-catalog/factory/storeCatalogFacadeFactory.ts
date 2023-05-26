@@ -1,6 +1,6 @@
 // dependências
 import StoreCatalogFacade from "../facade/storeCatalogFacade";
-import ProductRepository from "../repository/productRepository";
+import ProductRepository from "../repository/catalogProductRepository";
 import FindAllProductsUsecase from "../usecase/find-all-products/findAllProductsUseCase";
 import FindProductUseCase from "../usecase/find-product/findProductUseCase";
 

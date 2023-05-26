@@ -2,7 +2,7 @@
 import Id from "../../@shared/domain/value-object/id";
 import Product from "../domain/product";
 import ProductGateway from "../gateway/productGateway";
-import ProductModel from "./productModel";
+import ProductModel from "./catalogProductModel";
 
 // classe de repositório do orm, implementando a interface de gateway
 export default class ProductRepository implements ProductGateway {

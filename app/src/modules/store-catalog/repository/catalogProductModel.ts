@@ -3,12 +3,12 @@ import { Column, Model, PrimaryKey, Table } from "sequelize-typescript";
 
 // definindo as características da tabela no db
 @Table({
-  tableName: "products",
+  tableName: "catalogProducts",
   timestamps: false,
 })
 
 // classe de modelo do orm sequelize
-export default class ProductModel extends Model {
+export default class CatalogProductModel extends Model {
   // definindo as colunas e restrições da tabela
   @PrimaryKey
   @Column({ allowNull: false })
