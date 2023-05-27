@@ -1,11 +1,11 @@
 // dependências
-import ClientAdmFacadeFactory from "../../../client-adm/factory/clientAdmFacadeFactory";
-import InvoiceFacadeFactory from "../../../invoice/factory/invoiceFacadeFactory";
-import PaymentFacadeFactory from "../../../payment/factory/paymentFacadeFactory";
-import ProductAdmFacadeFactory from "../../../product-adm/factory/productAdmfacadeFactory";
-import StoreCatalogFacadeFactory from "../../../store-catalog/factory/storeCatalogFacadeFactory";
-import CheckoutRepository from "../../repository/checkoutRepository";
-import PlaceOrderUseCase from "../../usecase/place-order/placeOrderUseCase";
+import ClientAdmFacadeFactory from "../../client-adm/factory/clientAdmFacadeFactory";
+import InvoiceFacadeFactory from "../../invoice/factory/invoiceFacadeFactory";
+import PaymentFacadeFactory from "../../payment/factory/paymentFacadeFactory";
+import ProductAdmFacadeFactory from "../../product-adm/factory/productAdmfacadeFactory";
+import StoreCatalogFacadeFactory from "../../store-catalog/factory/storeCatalogFacadeFactory";
+import CheckoutRepository from "../repository/checkoutRepository";
+import PlaceOrderUseCase from "../usecase/place-order/placeOrderUseCase";
 import CheckoutFacade from "../facade/checkoutFacade";
 
 // classe de fábrica da facade

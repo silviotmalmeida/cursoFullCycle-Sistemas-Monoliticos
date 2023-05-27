@@ -1,7 +1,8 @@
 // dependências
-import UseCaseInterface from "../../../@shared/usecase/useCaseInterface";
-import { PlaceOrderOutputDto } from "../../usecase/place-order/placeOrderDto";
-import PlaceOrderUseCase from "../../usecase/place-order/placeOrderUseCase";
+
+import UseCaseInterface from "../../@shared/usecase/useCaseInterface";
+import { PlaceOrderOutputDto } from "../usecase/place-order/placeOrderDto";
+import PlaceOrderUseCase from "../usecase/place-order/placeOrderUseCase";
 import CheckoutFacadeInterface, {
   PlaceOrderInputDto,
 } from "./checkoutFacadeInterface";

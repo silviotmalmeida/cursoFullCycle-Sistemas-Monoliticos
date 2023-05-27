@@ -9,6 +9,12 @@ import { ClientModel } from "../client-adm/repository/clientModel";
 import { invoiceRoute } from "./routes/invoiceRoute";
 import InvoiceModel from "../invoice/repository/invoiceModel";
 import InvoiceProductModel from "../invoice/repository/invoiceProductModel";
+import { checkoutRoute } from "./routes/checkoutRoute";
+import CatalogProductModel from "../store-catalog/repository/catalogProductModel";
+import TransactionModel from "../payment/repository/transactionModel";
+import CheckoutClientModel from "../checkout/repository/checkoutClientModel";
+import CheckoutProductModel from "../checkout/repository/checkoutProductModel";
+import OrderModel from "../checkout/repository/orderModel";
 
 // configurando o express da api, bem como suas rotas
 export const app: Express = express();
@@ -16,6 +22,7 @@ app.use(express.json());
 app.use("/products", productsRoute);
 app.use("/clients", clientsRoute);
 app.use("/invoice", invoiceRoute);
+app.use("/checkout", checkoutRoute);
 
 // configurando o DB a ser utilizado pela api
 export let sequelize: Sequelize;
@@ -30,6 +37,11 @@ async function setupDb() {
     ClientModel,
     InvoiceModel,
     InvoiceProductModel,
+    CatalogProductModel,
+    TransactionModel,
+    CheckoutClientModel,
+    CheckoutProductModel,
+    OrderModel,
   ]);
   await sequelize.sync();
 }

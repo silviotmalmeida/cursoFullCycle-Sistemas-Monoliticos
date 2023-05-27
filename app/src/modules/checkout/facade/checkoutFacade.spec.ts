@@ -1,16 +1,16 @@
 // dependências
 import { Sequelize } from "sequelize-typescript";
-import { ClientModel } from "../../../client-adm/repository/clientModel";
-import { ProductModel } from "../../../product-adm/repository/productModel";
-import ClientAdmFacadeFactory from "../../../client-adm/factory/clientAdmFacadeFactory";
-import CatalogProductModel from "../../../store-catalog/repository/catalogProductModel";
-import TransactionModel from "../../../payment/repository/transactionModel";
-import InvoiceModel from "../../../invoice/repository/invoiceModel";
-import InvoiceProductModel from "../../../invoice/repository/invoiceProductModel";
-import CheckoutClientModel from "../../repository/checkoutClientModel";
-import CheckoutProductModel from "../../repository/checkoutProductModel";
-import OrderModel from "../../repository/orderModel";
+import { ClientModel } from "../../client-adm/repository/clientModel";
+import { ProductModel } from "../../product-adm/repository/productModel";
+import CatalogProductModel from "../../store-catalog/repository/catalogProductModel";
+import TransactionModel from "../../payment/repository/transactionModel";
+import InvoiceModel from "../../invoice/repository/invoiceModel";
+import InvoiceProductModel from "../../invoice/repository/invoiceProductModel";
+import CheckoutClientModel from "../repository/checkoutClientModel";
+import CheckoutProductModel from "../repository/checkoutProductModel";
+import OrderModel from "../repository/orderModel";
 import CheckoutFacadeFactory from "../factory/checkoutFacadeFactory";
+
 
 // criando a suíte de testes de unidade
 describe("CheckoutFacade test", () => {
